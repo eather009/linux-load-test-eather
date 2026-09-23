@@ -1,0 +1,25 @@
+The service account was initially created with /usr/sbin/nologin as specified in Part 1. 
+
+SSH public-key authentication succeeded, but the interactive session was rejected because of the login shell.
+To complete the SSH access requirement in Part 4, the account shell was changed to /bin/bash.
+
+Ubuntu uses systemd socket activation for SSH.
+Although sshd -T showed both ports 22 and 2222, the active ssh.socket initially listened only on port 22. After configuring the socket, port 2222 became available and SSH key authentication succeeded.
+
+
+Part 5: SSH Hardening
+
+The AWS Security Group initially allowed SSH on TCP port 22. TCP port 2222 was added before changing the SSH configuration so that the new SSH path could be tested safely.
+
+The final effective SSH configuration was:
+- Port 22
+- Port 2222
+- PermitRootLogin no
+- PasswordAuthentication no
+- AllowUsers bgdsvc_eather
+
+SSH configuration validation with sshd -t completed successfully. A new SSH connection using the service account's Ed25519 key successfully connected through port 2222.
+
+Port 22 was kept enabled during testing to avoid losing administrative access to the EC2 instance.
+
+
