@@ -23,3 +23,14 @@ SSH configuration validation with sshd -t completed successfully. A new SSH conn
 Port 22 was kept enabled during testing to avoid losing administrative access to the EC2 instance.
 
 
+Part 6: Monitoring and Cron
+
+The cron service was already installed, enabled, and running on the system.
+
+The monitoring script was tested manually and successfully recorded the timestamp, memory usage, tmpfs usage, and processes belonging to the service account.
+
+The monitoring script was installed under /usr/local/bin and scheduled through root's crontab to run every 5 minutes.
+
+Cron execution was verified using journalctl. The cron log showed /usr/local/bin/bgdsvc_eather_monitor.sh executing at 16:35:01 UTC, and a corresponding timestamped entry appeared in monitor.log.
+
+The cleanup script was configured to remove files older than one day from the service account's tmpfs directory. It was not manually executed during testing because the tmpfs contained files used as evidence from the earlier stress-testing exercise.
