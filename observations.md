@@ -34,3 +34,24 @@ The monitoring script was installed under /usr/local/bin and scheduled through r
 Cron execution was verified using journalctl. The cron log showed /usr/local/bin/bgdsvc_eather_monitor.sh executing at 16:35:01 UTC, and a corresponding timestamped entry appeared in monitor.log.
 
 The cleanup script was configured to remove files older than one day from the service account's tmpfs directory. It was not manually executed during testing because the tmpfs contained files used as evidence from the earlier stress-testing exercise.
+
+
+
+
+Part 7: Log Rotation
+
+A logrotate configuration was created for /var/log/bgdsvc_eather/*.log.
+
+The configuration uses daily rotation, keeps 5 rotations, compresses rotated logs, skips missing and empty logs, and creates new logs with 0640 permissions owned by bgdsvc_eather.
+
+The configuration was first checked using logrotate debug mode. The debug output showed that the current monitor.log was below the 10 MB size threshold.
+
+A forced rotation was then performed using logrotate -f. The result was:
+- monitor.log — newly created empty log
+- monitor.log.1.gz — compressed rotated log
+
+Both files were owned by bgdsvc_eather:bgdsvc_eather, with the expected 0640 permissions.
+
+The 'size' option overrides the 'daily' option as the rotation trigger when both are specified. This was observed in the logrotate debug output.
+
+
